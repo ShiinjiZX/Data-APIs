@@ -1,0 +1,840 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>REST APIs Directory - APIs Hub</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 50%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(72, 52, 212, 0.3) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 15px;
+            animation: fadeInDown 0.6s ease;
+        }
+
+        .info-cards {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .info-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .info-card:hover {
+            transform: translateY(-2px);
+            background: rgba(255, 255, 255, 0.08);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .info-icon {
+            font-size: 1.5em;
+        }
+
+        .info-content {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .info-label {
+            font-size: 0.75em;
+            color: rgba(255, 255, 255, 0.6);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .info-value {
+            font-size: 1.1em;
+            font-weight: 600;
+            color: #fff;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            animation: fadeInDown 0.8s ease;
+        }
+
+        .header h1 {
+            font-size: 3.5em;
+            font-weight: 800;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 15px;
+            letter-spacing: -1px;
+            text-shadow: 0 0 30px rgba(102, 126, 234, 0.3);
+        }
+
+        .header p {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 1.2em;
+            font-weight: 300;
+        }
+
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+            animation: fadeIn 1s ease;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 25px;
+            text-align: center;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            transition: left 0.5s;
+        }
+
+        .stat-card:hover::before {
+            left: 100%;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            background: rgba(255, 255, 255, 0.08);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+        }
+
+        .stat-number {
+            font-size: 2.5em;
+            font-weight: 700;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .stat-label {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.9em;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 5px;
+        }
+
+        .search-box {
+            margin-bottom: 30px;
+            animation: fadeIn 1.2s ease;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 18px 25px;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 50px;
+            color: white;
+            font-size: 1em;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .search-input::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .search-input:focus {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: #667eea;
+            box-shadow: 0 0 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .table-wrapper {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            animation: fadeInUp 1s ease;
+        }
+
+        .table-container {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.3), rgba(118, 75, 162, 0.3));
+            backdrop-filter: blur(10px);
+        }
+
+        th {
+            padding: 20px 15px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 0.95em;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: rgba(255, 255, 255, 0.95);
+            border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+        }
+
+        td {
+            padding: 20px 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            color: rgba(255, 255, 255, 0.85);
+        }
+
+        tbody tr {
+            transition: all 0.3s ease;
+            animation: slideIn 0.5s ease forwards;
+            opacity: 0;
+        }
+
+        tbody tr:hover {
+            background: rgba(102, 126, 234, 0.1);
+            transform: scale(1.01);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.2);
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9em;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .btn:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        .btn span {
+            position: relative;
+            z-index: 1;
+        }
+
+        .btn-link {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-link:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 25px rgba(102, 126, 234, 0.6);
+        }
+
+        .btn-author {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(240, 147, 251, 0.4);
+        }
+
+        .btn-author:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 25px rgba(240, 147, 251, 0.6);
+        }
+
+        .status {
+            padding: 8px 16px;
+            border-radius: 25px;
+            font-size: 0.85em;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            backdrop-filter: blur(10px);
+        }
+
+        .status::before {
+            content: '';
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        .status-online {
+            background: rgba(16, 185, 129, 0.2);
+            color: #10b981;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+
+        .status-online::before {
+            background: #10b981;
+            box-shadow: 0 0 10px #10b981;
+        }
+
+        .status-offline {
+            background: rgba(239, 68, 68, 0.2);
+            color: #ef4444;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+
+        .status-offline::before {
+            background: #ef4444;
+        }
+
+        .badge {
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: 600;
+            display: inline-block;
+            margin: 0 3px;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        .badge:hover {
+            transform: scale(1.05);
+        }
+
+        .badge-ya {
+            background: rgba(251, 191, 36, 0.2);
+            color: #fbbf24;
+            border: 1px solid rgba(251, 191, 36, 0.3);
+        }
+
+        .badge-tidak {
+            background: rgba(59, 130, 246, 0.2);
+            color: #3b82f6;
+            border: 1px solid rgba(59, 130, 246, 0.3);
+        }
+
+        .api-name {
+            font-weight: 700;
+            color: #fff;
+            font-size: 1.1em;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .api-name::before {
+            content: '⚡';
+            font-size: 1.2em;
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.5;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2em;
+            }
+
+            .stats-container {
+                grid-template-columns: 1fr;
+            }
+
+            .top-bar {
+                justify-content: center;
+            }
+
+            .info-cards {
+                justify-content: center;
+            }
+
+            th, td {
+                padding: 12px 10px;
+                font-size: 0.85em;
+            }
+
+            .btn {
+                padding: 8px 14px;
+                font-size: 0.85em;
+            }
+
+            .api-name {
+                font-size: 1em;
+            }
+        }
+
+        .tooltip {
+            position: relative;
+            cursor: help;
+        }
+
+        .tooltip:hover::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 8px 12px;
+            background: rgba(0, 0, 0, 0.9);
+            color: white;
+            border-radius: 6px;
+            font-size: 0.8em;
+            white-space: nowrap;
+            z-index: 1000;
+            margin-bottom: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="top-bar">
+            <div class="info-cards">
+                <div class="info-card">
+                    <div class="info-icon">👥</div>
+                    <div class="info-content">
+                        <div class="info-label">Visitor</div>
+                        <div class="info-value" id="visitorCount">0</div>
+                    </div>
+                </div>
+                <div class="info-card">
+                    <div class="info-icon">🕐</div>
+                    <div class="info-content">
+                        <div class="info-label">Waktu</div>
+                        <div class="info-value" id="currentTime">00:00:00</div>
+                    </div>
+                </div>
+                <div class="info-card" id="batteryCard" style="display: none;">
+                    <div class="info-icon" id="batteryIcon">🔋</div>
+                    <div class="info-content">
+                        <div class="info-label">Baterai</div>
+                        <div class="info-value" id="batteryLevel">-</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="header">
+            <h1>🚀 REST APIs Directory</h1>
+            <p>Koleksi Website API Dari Berbagai Developer Luar & Dalam Negeri Untuk Membantu Mu Ngoding.</p>
+        </div>
+
+        <div class="stats-container">
+            <div class="stat-card">
+                <div class="stat-number" id="totalApis">0</div>
+                <div class="stat-label">Total APIs</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="activeApis">0</div>
+                <div class="stat-label">Aktif</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="authPercent">0%</div>
+                <div class="stat-label">Auth Required</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="apiKeyPercent">0%</div>
+                <div class="stat-label">API Key</div>
+            </div>
+        </div>
+
+        <div class="search-box">
+            <input type="text" class="search-input" placeholder="🔍 Cari API berdasarkan nama, author, atau status..." id="searchInput">
+        </div>
+
+        <div class="table-wrapper">
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Nama API</th>
+                            <th>Link</th>
+                            <th>Author</th>
+                            <th>Auth</th>
+                            <th>API Key</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="apiTable">
+                        <!-- Data akan di-load dari JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+// ===========================================
+// DATA REST APIs
+// ===========================================
+const apisData = [
+    {
+        nama: "Neoxr",
+        link: "https://api.neoxr.eu",
+        author: {
+            nama: "Neoxr",
+            sosmed: "https://whatsapp.com/channel/0029Vb5ekjf4dTnMuADBHX1j"
+        },
+        auth: true,
+        apikey: true,
+        status: "online" // "online" atau "offline"
+    },
+    {
+        nama: "BetaBotz",
+        link: "https://api.betabotz.eu.org",
+        author: {
+            nama: "Lann",
+            sosmed: "https://api.betabotz.eu.org/contact"
+        },
+        auth: true,
+        apikey: true,
+        status: "online"
+    },
+    {
+        nama: "Botcahx",
+        link: "https://api.botcahx.eu.org",
+        author: {
+            nama: "Tio",
+            sosmed: "https://wa.me/6282221792667"
+        },
+        auth: true,
+        apikey: true,
+        status: "online"
+    },
+    {
+        nama: "Toxic Devil",
+        link: "https://toxicdevilapi.vercel.app/",
+        author: {
+            nama: "Toxic Devil",
+            sosmed: "https://github.com/TOXIC-DEVIL"
+        },
+        auth: false,
+        apikey: false,
+        status: "online"
+    },
+    {
+        nama: "LolHuman",
+        link: "https://api.lolhuman.xyz",
+        author: {
+            nama: "Lol Human",
+            sosmed: "https://www.instagram.com/lolhuman.xyz/"
+        },
+        auth: true,
+        apikey: true,
+        status: "online"
+    }
+];
+
+// ===========================================
+// FUNGSI UNTUK RENDER TABEL
+// ===========================================
+function renderTable(data) {
+    const tableBody = document.getElementById('apiTable');
+    tableBody.innerHTML = '';
+    
+    data.forEach((api, index) => {
+        const row = document.createElement('tr');
+        row.style.animationDelay = `${index * 0.1}s`;
+        
+        // Author HTML
+        const authorHTML = api.author.sosmed 
+            ? `<a href="${api.author.sosmed}" target="_blank" class="btn btn-author"><span>${api.author.nama}</span></a>`
+            : `<span style="color: rgba(255,255,255,0.8); font-weight: 500;">${api.author.nama}</span>`;
+        
+        // Status class
+        const statusClass = api.status === 'online' ? 'status-online' : 'status-offline';
+        const statusText = api.status === 'online' ? 'Online' : 'Offline';
+        
+        row.innerHTML = `
+            <td class="api-name">${api.nama}</td>
+            <td>
+                <a href="${api.link}" target="_blank" class="btn btn-link">
+                    <span>Kunjungi API</span>
+                </a>
+            </td>
+            <td>${authorHTML}</td>
+            <td>
+                <span class="badge ${api.auth ? 'badge-ya' : 'badge-tidak'} tooltip" 
+                      data-tooltip="${api.auth ? 'Memerlukan login' : 'Tidak perlu login'}">
+                    ${api.auth ? 'Ya' : 'Tidak'}
+                </span>
+            </td>
+            <td>
+                <span class="badge ${api.apikey ? 'badge-ya' : 'badge-tidak'} tooltip" 
+                      data-tooltip="${api.apikey ? 'Memerlukan API key' : 'Tidak perlu API key'}">
+                    ${api.apikey ? 'Ya' : 'Tidak'}
+                </span>
+            </td>
+            <td>
+                <span class="status ${statusClass}">${statusText}</span>
+            </td>
+        `;
+        
+        tableBody.appendChild(row);
+    });
+    
+    updateStats(data);
+}
+
+// ===========================================
+// FUNGSI UPDATE STATISTIK
+// ===========================================
+function updateStats(data) {
+    const total = data.length;
+    const active = data.filter(api => api.status === 'online').length;
+    const authRequired = data.filter(api => api.auth).length;
+    const apiKeyRequired = data.filter(api => api.apikey).length;
+    
+    document.getElementById('totalApis').textContent = total;
+    document.getElementById('activeApis').textContent = active;
+    document.getElementById('authPercent').textContent = total > 0 ? Math.round((authRequired / total) * 100) + '%' : '0%';
+    document.getElementById('apiKeyPercent').textContent = total > 0 ? Math.round((apiKeyRequired / total) * 100) + '%' : '0%';
+}
+
+// ===========================================
+// FUNGSI SEARCH
+// ===========================================
+document.getElementById('searchInput').addEventListener('input', function(e) {
+    const searchTerm = e.target.value.toLowerCase();
+    const filteredData = apisData.filter(api => {
+        return api.nama.toLowerCase().includes(searchTerm) ||
+               api.author.nama.toLowerCase().includes(searchTerm) ||
+               api.status.toLowerCase().includes(searchTerm);
+    });
+    renderTable(filteredData);
+});
+
+// ===========================================
+// VISITOR COUNTER
+// ===========================================
+async function updateVisitorCount() {
+    const visitorElement = document.getElementById('visitorCount');
+    
+    try {
+        // Menggunakan API counter gratis untuk tracking visitor global
+        // API ini akan menghitung setiap unique visitor
+        const pageId = 'rest-api-directory'; // ID unik untuk halaman ini
+        const counterAPI = `https://api.countapi.xyz/hit/${pageId}/visits`;
+        
+        const response = await fetch(counterAPI);
+        const data = await response.json();
+        
+        if (data.value) {
+            // Animasi counter naik
+            animateCounter(visitorElement, data.value);
+        }
+    } catch (error) {
+        console.error('Error fetching visitor count:', error);
+        // Fallback ke localStorage jika API gagal
+        const localCount = parseInt(localStorage.getItem('visitorBackup') || '1');
+        visitorElement.textContent = localCount.toLocaleString();
+    }
+}
+
+// Fungsi animasi counter
+function animateCounter(element, targetValue) {
+    const currentValue = parseInt(element.textContent.replace(/,/g, '') || '0');
+    const duration = 1000; // 1 detik
+    const steps = 30;
+    const increment = (targetValue - currentValue) / steps;
+    let current = currentValue;
+    let step = 0;
+    
+    const timer = setInterval(() => {
+        step++;
+        current += increment;
+        
+        if (step >= steps) {
+            current = targetValue;
+            clearInterval(timer);
+        }
+        
+        element.textContent = Math.floor(current).toLocaleString();
+    }, duration / steps);
+}
+
+// ===========================================
+// CLOCK
+// ===========================================
+function updateClock() {
+    const now = new Date();
+    const hours = String(now.getHours()).padStart(2, '0');
+    const minutes = String(now.getMinutes()).padStart(2, '0');
+    const seconds = String(now.getSeconds()).padStart(2, '0');
+    document.getElementById('currentTime').textContent = `${hours}:${minutes}:${seconds}`;
+}
+
+// ===========================================
+// BATTERY STATUS
+// ===========================================
+async function updateBattery() {
+    if ('getBattery' in navigator) {
+        try {
+            const battery = await navigator.getBattery();
+            const batteryCard = document.getElementById('batteryCard');
+            const batteryLevel = document.getElementById('batteryLevel');
+            const batteryIcon = document.getElementById('batteryIcon');
+            
+            batteryCard.style.display = 'flex';
+            
+            function updateBatteryDisplay() {
+                const level = Math.round(battery.level * 100);
+                batteryLevel.textContent = `${level}%`;
+                
+                // Update icon based on level
+                if (battery.charging) {
+                    batteryIcon.textContent = '⚡';
+                } else if (level > 80) {
+                    batteryIcon.textContent = '🔋';
+                } else if (level > 50) {
+                    batteryIcon.textContent = '🔋';
+                } else if (level > 20) {
+                    batteryIcon.textContent = '🪫';
+                } else {
+                    batteryIcon.textContent = '🪫';
+                }
+            }
+            
+            updateBatteryDisplay();
+            battery.addEventListener('levelchange', updateBatteryDisplay);
+            battery.addEventListener('chargingchange', updateBatteryDisplay);
+        } catch (error) {
+            console.log('Battery API not supported');
+        }
+    }
+}
+
+// ===========================================
+// INISIALISASI
+// ===========================================
+document.addEventListener('DOMContentLoaded', function() {
+    renderTable(apisData);
+    updateVisitorCount();
+    updateClock();
+    updateBattery();
+    
+    // Update clock every second
+    setInterval(updateClock, 1000);
+});
+    </script>
+</body>
+</html>
